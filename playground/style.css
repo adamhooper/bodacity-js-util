@@ -1,0 +1,16 @@
+p.lede {
+	color: #666;
+	font-style: italic;
+}
+
+ul.utilities a {
+	font-weight: bold;
+}
+ul.utilities span {
+	color: #666;
+	font-size: .9em;
+}
+
+pre.console span.answer {
+	color: #666;
+}

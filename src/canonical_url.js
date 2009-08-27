@@ -109,7 +109,7 @@ function clean_url(url) {
 }
 
 var RE_PROTO = /^\w+:\/\//;
-var RE_ALL_BUT_PATH = /^(\w+:\/\/[^\/]+)/;
+var RE_ALL_BUT_PATH = /^(\w+:\/\/[^\/]*)/;
 function canonical_url(url, options) {
 
 	if (RE_PROTO.test(url)) {

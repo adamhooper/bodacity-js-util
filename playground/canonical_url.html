@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+											"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>Bodacity JavaScript Utilities</title>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<h1>canonical_url.js</h1>
+		<p class="lede">
+			transforms any URL (potentially relative) into an absolute URL, free
+			of "../" path components.
+		</p>
+		<h2>Usage</h2>
+		<ol>
+			<li>Include <tt>canonical_url.js</tt> in your HTML</li>
+			<li>
+				Call <tt>canonical_url(url)</tt> to retrieve a canonical representation
+				of <tt>url</tt>
+			</li>
+			<li>
+				Call <tt>url_equals(url1, url2)</tt> to check if <tt>url1</tt> and
+				<tt>url2</tt> point to the same place
+			</li>
+		</ol>
+		<h2>Examples</h2>
+		<pre class="console">loading in <tt>$(document).ready()</tt>...</pre>
+		<script type="text/javascript" src="../test/jquery-1.3.2.js"></script>
+		<script type="text/javascript" src="../src/canonical_url.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				var canonical_url_examples = [
+					[ 'http://example.com/' ],
+					[ '/test' ],
+					[ 'test' ],
+					[ 'test1/../test2' ],
+					[ 'test', { base: 'http://some-base.com/' } ],
+					[ 'test', { base: 'http://some-base.com/subdir/file.html' } ],
+				];
+
+				var url_equals_examples = [
+					[ 'http://example.com/', 'http://example.com/index.html' ],
+					[ '/file1.html', '/subdir1/file1.html' ],
+					[ '/file1.html', '/subdir1/../file1.html' ],
+					[ '/file1.html', '../file1.html', { base: 'http://example.com/subdir/' } ]
+				];
+
+				var $pre = $('pre.console');
+				$pre.text('var cu, eq;\n\n');
+
+				function url_or_url_plus_options_string(url, options) {
+					return '"' + url + '"' + (
+						options ? (
+							', { ' + (
+								options.base ? ('base: "' + options.base + '"') : ''
+							) + (
+								options.location ? ('location: "' + options.location + '"') : ''
+							) + ' }'
+						) : ''
+					);
+				}
+
+				function add_example(question_string, answer_string) {
+					var $div = $('<div></div>');
+					var $txt = $('<span class="question"></span>');
+					var $val = $('<span class="answer"></span>');
+
+					$txt.text(question_string);
+					$val.text(' // returns ' + answer_string);
+
+					$div.append($txt);
+					$div.append($val);
+					$pre.append($div);
+				}
+
+				function add_canonical_url_example(url, options) {
+					var input = url_or_url_plus_options_string(url, options);
+					add_example(
+						'cu = canonical_url(' + input + ');',
+						'"' + canonical_url(url, options) + '"'
+					);
+				}
+
+				function add_url_equals_example(url1, url2, options) {
+					var url2_plus_options = url_or_url_plus_options_string(url2, options);
+
+					add_example(
+						'eq = url_equals("' + url1 + '", ' + url2_plus_options + ');',
+						url_equals(url1, url2, options) ? 'true' : 'false'
+					);
+				}
+
+				$.each(canonical_url_examples, function() {
+					add_canonical_url_example.apply({}, this);
+				});
+
+				$pre.append('<br/>');
+
+				$.each(url_equals_examples, function() {
+					add_url_equals_example.apply({}, this);
+				});
+			});
+		</script>
+	</body>
+</html>
