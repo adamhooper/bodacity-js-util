@@ -1,0 +1,37 @@
+Bodacity JavaScript Utilities
+bodacious little JavaScript gems
+
+Author: Adam Hooper <adam@adamhooper.com>
+
+DESCRIPTION
+
+Here's the deal: you want to do something bodacious, and you think to yourself,
+"some other bodacious person must have wanted to do this." You find this little
+collection of utilities, and one of them does exactly what you want.
+
+So you use it: hassle-free, license-free. You can even ask me for support and
+I'll probably respond sometime.
+
+CONTENTS
+
+* canonical_url.js: transforms any URL (potentially relative) into an absolute
+                    URL, free of "../" path components.
+* channeler.js: wraps jQuery's $.ajax() so that subsequent requests cancel
+                earlier ones and event handlers can be registered independently.
+* jquery.excerpt.js: trims a block-level element's text content to fit a
+                     set number of lines.
+* utf8.js: presents a String as an Array of Numbers representing utf-8 bytes.
+
+LICENSE
+
+(This license applies only to the code in src/; code in other files may be
+bound by licensing restrictions specified in the files themselves.)
+
+I believe in software freedom, not any abomination thereof. This project is
+released into the Public Domain, meaning I relinquish my copyright (to any
+extend the law allows) and grant you all rights to use, modify, sell, or
+otherwise take advantage of my software.
+
+However, I do kindly request that, as a favor, you refrain from using my
+software as part of an evil plan involving velociraptors and mind-controlling
+robots (even though I would not be legally entitled to sue you for doing so).
