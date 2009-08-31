@@ -9,12 +9,12 @@
 	<body>
 		<h1>channeler.js</h1>
 		<p class="lede">
-			wraps jQuery's $.ajax() so that subsequent requests cancel earlier ones
+			Wraps jQuery's $.ajax() so that subsequent requests cancel earlier ones
 			and event handlers can be registered independently.
 		</p>
 		<h2>Usage</h2>
 		<ol>
-			<li>Include <tt>channeler.js</tt> in your HTML</li>
+			<li>Include jQuery 1.3+ and <tt>channeler.js</tt> in your HTML</li>
 			<li>
 				Call <tt>Channeler.instance().add_listener(type, callback)</tt> to
 				register callbacks for messages
