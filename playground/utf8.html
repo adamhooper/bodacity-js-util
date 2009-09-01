@@ -47,7 +47,12 @@
 			<tt>.utf8_num_bytes()</tt>, the client-side will accurately count
 			<tt>45</tt> bytes.)
 		</p>
-
+		<p>
+			<i>Note: proper parsing of UTF-8 Strings depends upon the JavaScript
+			engine's detecting UTF-8 as the character set. This is often specified in
+			an HTTP response header or an HTML document's <tt>http-equiv</tt>
+			<tt>&lt;meta&gt;</tt> tag.</i>
+		</p>
 
 		<h2>Examples</h2>
 		<pre class="console">loading in <tt>$(document).ready()</tt>...</pre>
@@ -73,10 +78,10 @@
 				for (i = 0; i < examples.length; i++) {
 					var s = examples[i];
 
-					$pre.append('<span class="question">"' + s + '".to_utf8_byte_array();</span><span class="answer"> // returns ' + format_array(s.to_utf8_byte_array()) + '</span><br />');
-					$pre.append('<span class="question">"' + s + '".length;</span><span class="answer"> // returns ' + s.length + '</span><br />');
-					$pre.append('<span class="question">"' + s + '".utf8_num_bytes();</span><span class="answer"> // returns ' + s.utf8_num_bytes() + '</span><br />');
-					$pre.append('<br />');
+					$pre.append('&lt;span class="question"&gt;"' + s + '".to_utf8_byte_array();&lt;/span&gt;&lt;span class="answer"&gt; // returns ' + format_array(s.to_utf8_byte_array()) + '&lt;/span&gt;&lt;br /&gt;');
+					$pre.append('&lt;span class="question"&gt;"' + s + '".length;&lt;/span&gt;&lt;span class="answer"&gt; // returns ' + s.length + '&lt;/span&gt;&lt;br /&gt;');
+					$pre.append('&lt;span class="question"&gt;"' + s + '".utf8_num_bytes();&lt;/span&gt;&lt;span class="answer"&gt; // returns ' + s.utf8_num_bytes() + '&lt;/span&gt;&lt;br /&gt;');
+					$pre.append('&lt;br /&gt;');
 				}
 			});
 		</script>
