@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+											"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>Bodacity JavaScript Utilities</title>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<h1>jquery.excerpt.js</h1>
+		<p class="lede">
+			Trims a block-level element's text content to fit a set number of lines.
+		</p>
+		<h2>Usage</h2>
+		<ol>
+			<li>Include jQuery 1.3+ and <tt>jquery.excerpt.js</tt> in your HTML</li>
+			<li>
+				Call <tt>$elem.excerpt();</tt> to abbreviate <tt>$elem</tt> (a jQuery
+				element) to 1 line. HTML tags are ignored: only text is excerpted.
+			</li>
+		</ol>
+		<p>Options (passed as the first parameter):</p>
+		<dl>
+			<dt>end</dt>
+			<dd>
+				String or DOM node which should appear at the end of the excerpt, if we
+				truncate.
+			</dd>
+
+			<dt>always_end</dt>
+			<dd>
+				String or DOM node which should appear at the end of the excerpt,
+				regardless of whether we truncate. (If we truncate, <tt>end</tt> will
+				appear before <tt>always_end</tt>.)
+			<dd>
+
+			<dt>lines</dt>
+			<dd>Number of lines to display</dd>
+		</dl>
+		<p>
+			<tt>excerpt()</tt> relies upon the web browser's actual rendering and
+			layout. This means you can, for instance, generate lines which wrap
+			around floated images. Be sure your <tt>img</tt> tags have hard-coded
+			<tt>width</tt> and <tt>height</tt>, so that <tt>excerpt()</tt> uses the
+			correct page layout before the browser actually finishes loading.
+		</p>
+		<p>
+			<tt>excerpt()</tt>, though heavily optimized, can be somewhat slow
+			(because the browser itself needs to lay out the same text seven or eight
+			times). Be aware of the potential impact on your page load time. (A
+			complex page with five excerpts might suffer a 50-100ms delay on a
+			typical browser.)
+		<p>
+
+		<h2>Examples</h2>
+		<script type="text/javascript" src="jquery-1.3.2.js"></script>
+		<script type="text/javascript" src="../src/jquery.excerpt.js"></script>
+
+		<div id="example1" style="width:300px">
+			Constrained to 300px, this div will be reduced to a single line when
+			the below button is clicked. All defaults will be used.
+		</div>
+		<p>
+			<a id="example1_a" href="#">$div.excerpt()</a>
+		</p>
+
+		<div id="example2" style="width: 300px">
+			Constrained to 300px, this div will be reduced to a three lines when
+			the below button is clicked. There will be a button which restores the
+			original text, too.
+		</div>
+		<p>
+			<a id="example2_a" href="#">
+				var o = $div.text(), $r = $('&lt;a href="#" style="padding-left:5px"&gt;restore&lt;/a&gt;');
+				$div.excerpt({ lines: 3, end: '[cut]', always_end: $r });
+				$div.find('a').click(function(e){e.preventDefault(); $div.text(o);});
+			</a>
+		</p>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				var examples = [ 'example1', 'example2' ];
+
+				$.each(examples, function() {
+					var ex = this;
+					var $div = $('#' + ex);
+					var $a = $('#' + ex + '_a');
+					$a.click(function(e) {
+						e.preventDefault();
+						eval($a.text());
+					});
+				});
+			});
+		</script>
+	</body>
+</html>
