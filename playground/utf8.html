@@ -13,7 +13,7 @@
 		</p>
 		<h2>Usage</h2>
 		<ol>
-			<li>Include <tt>utf8.js</tt> in your HTML</li>
+			<li>Include <a href="../src/utf8.js">utf8.js</a> in your HTML</li>
 			<li>
 				Call <tt>String.prototype.to_utf8_byte_array()</tt> to retrieve
 				utf-8 bytes for a String.
@@ -58,7 +58,7 @@
 		<pre class="console">loading in <tt>$(document).ready()</tt>...</pre>
 		<script type="text/javascript" src="jquery-1.3.2.js"></script>
 		<script type="text/javascript" src="../src/utf8.js"></script>
-		<script type="text/javascript">
+		<script type="text/javascript">//<!--
 			function format_array(a) {
 				var i;
 				var parts = [];
@@ -78,12 +78,12 @@
 				for (i = 0; i < examples.length; i++) {
 					var s = examples[i];
 
-					$pre.append('&lt;span class="question"&gt;"' + s + '".to_utf8_byte_array();&lt;/span&gt;&lt;span class="answer"&gt; // returns ' + format_array(s.to_utf8_byte_array()) + '&lt;/span&gt;&lt;br /&gt;');
-					$pre.append('&lt;span class="question"&gt;"' + s + '".length;&lt;/span&gt;&lt;span class="answer"&gt; // returns ' + s.length + '&lt;/span&gt;&lt;br /&gt;');
-					$pre.append('&lt;span class="question"&gt;"' + s + '".utf8_num_bytes();&lt;/span&gt;&lt;span class="answer"&gt; // returns ' + s.utf8_num_bytes() + '&lt;/span&gt;&lt;br /&gt;');
-					$pre.append('&lt;br /&gt;');
+					$pre.append('<span class="question">"' + s + '".to_utf8_byte_array();<\/span><span class="answer"> // returns ' + format_array(s.to_utf8_byte_array()) + '<\/span><br />');
+					$pre.append('<span class="question">"' + s + '".length;<\/span><span class="answer"> // returns ' + s.length + '<\/span><br />');
+					$pre.append('<span class="question">"' + s + '".utf8_num_bytes();<\/span><span class="answer"> // returns ' + s.utf8_num_bytes() + '<\/span><br />');
+					$pre.append('<br />');
 				}
 			});
-		</script>
+		// --></script>
 	</body>
 </html>

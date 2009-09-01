@@ -1,7 +1,6 @@
 function Channeler() {
 	this.listeners = {};
 	this.requests = {}; // type => XHR
-	this._request_number = 0;
 }
 
 (function() {
@@ -94,7 +93,7 @@ Channeler.prototype.abort_channel = function(type) {
  *                 Params: textStatus (null, "timeout", "error", "notmodified",
  *                         "parseerror")
  * - [type].cancel: broadcasts when manually canceling.
- *								  Params: (none)
+ *                  Params: (none)
  * - [type].complete: broadcasts after .success, .error, or .cancel.
  *                    Params: textStatus
  *
