@@ -157,13 +157,9 @@ $.extend(CalendarDatePicker.prototype, {
 		});
 		$table.append($thead_month);
 
-		var $thead2 = $('<thead class="days_of_week"><tr></tr></thead>');
-		$.each(this.options.day_of_week_texts, function(i, text) {
-			var $th = $('<th></th>');
-			$th.text(text);
-			$thead2.children('tr').append($th);
-		});
-		$table.append($thead2);
+		var thead_str = '<thead class="days_of_week"><tr>' + this._days_of_week_ths() + '</tr></thead>';
+
+		$table.append(thead_str);
 
 		var $tbody = $('<tbody></tbody>');
 		var $tr = $('<tr></tr>');
@@ -315,7 +311,28 @@ $.extend(CalendarDatePicker.prototype, {
 		this.$div.trigger('calendar_date_picker:date_selected', [this._copy_date_with_time(this.selected_date, this.time)]);
 
 		this._refresh_calendar_table_classes(this.$div.find('table'));
+	},
+
+	_escape_html: function(s) {
+		if (!this.$_escape_html_elem) {
+			this.$_escape_html_elem = $('<div></div>');
+		}
+		return this.$_escape_html_elem.text(s).html();
+	},
+
+	_days_of_week_ths: function() {
+		var _this = this;
+		var strs = $.map(this.options.day_of_week_texts, escape_html);
+		return '<th>' + strs.join('</th><th>') + '</th>';
 	}
 });
+
+var $_escape_html_elem;
+function escape_html(s) {
+	if (!$_escape_html_elem) {
+		$_escape_html_elem = $('<div></div>');
+	}
+	return $_escape_html_elem.text(s).html();
+}
 
 })(jQuery);
