@@ -12,6 +12,11 @@
  *
  * For instance: the four-character string, "Café" produces as output a
  * five-Number Array, [ 0x43, 0x61, 0x66, 0xc3, 0xa9 ].
+ *
+ * --
+ * Bodacity JavaScript Utilities
+ * http://adamhooper.com/bodacity
+ * Public Domain (no licensing restrictions)
  */
 String.prototype.to_utf8_byte_array = function() {
 	var bytes = [];

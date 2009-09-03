@@ -24,6 +24,11 @@
  *               not we truncate. (This may actually cause truncation which
  *               would otherwise not occur.)
  *	 lines: (default 1) Number of lines of text to display.
+ *
+ * --
+ * Bodacity JavaScript Utilities
+ * http://adamhooper.com/bodacity
+ * Public Domain (no licensing restrictions)
  */
 function Excerpt(elem, options) {
 	this.$elem = $(elem);

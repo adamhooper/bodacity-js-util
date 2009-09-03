@@ -11,6 +11,11 @@
  * will return true.
  *
  * See: http://www.ietf.org/rfc/rfc1808.txt Relative Uniform Resource Locators
+ *
+ * --
+ * Bodacity JavaScript Utilities
+ * http://adamhooper.com/bodacity
+ * Public Domain (no licensing restrictions)
  */
 
 function dirname(filename) {

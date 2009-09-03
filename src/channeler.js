@@ -15,6 +15,11 @@ var channeler;
  * will listen to results.
  *
  * Broadcasts from one Channeler will not be heard by other Channelers.
+ *
+ * --
+ * Bodacity JavaScript Utilities
+ * http://adamhooper.com/bodacity
+ * Public Domain (no licensing restrictions)
  */
 Channeler.instance = function() {
 	if (channeler) return channeler;
