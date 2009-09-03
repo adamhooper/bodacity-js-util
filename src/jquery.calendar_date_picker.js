@@ -125,6 +125,18 @@ $.extend(CalendarDatePicker.prototype, {
 		return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1, d.getHours(), d.getMinutes());
 	},
 
+	_previous_date: function(d) {
+		return new Date(d.getFullYear(), d.getMonth(), d.getDate() - 1, d.getHours(), d.getMinutes());
+	},
+
+	_same_year: function(d1, d2) {
+		return d1.getYear() == d2.getYear();
+	},
+
+	_same_month: function(d1, d2) {
+		return this._same_year(d1, d2) && d1.getMonth() == d2.getMonth();
+	},
+
 	_extract_options: function() {
 		this.today_date = this._copy_date(this.options.today_date || new Date());
 
@@ -140,7 +152,8 @@ $.extend(CalendarDatePicker.prototype, {
 	_create_calendar: function() {
 		var _this = this;
 
-		var $table = $('<table><thead class="month"><tr><th colspan="7"><a class="previous_month" href="#"></a><a class="next_month" href="#"></a><span class="month"></span> <span class="year"></span></th></tr></thead><thead class="days_of_week"><tr>' + this._days_of_week_ths() + '</tr></thead><tbody></tbody></table>');
+		var $table = $('<table>' + this._thead_month_html() + this._thead_days_of_week_html() + this._tbody_html() + '</table>');
+
 		var $thead_month = $table.children(':eq(0)');
 		$thead_month.find('a.previous_month').text(this.options.previous_month_text);
 		$thead_month.find('a.previous_month').click(function(e) {
@@ -156,62 +169,26 @@ $.extend(CalendarDatePicker.prototype, {
 		});
 
 		var $tbody = $table.children('tbody');
-		var $tr = $('<tr></tr>');
-		var d = this._copy_date(this.focus_date);
-		var empty_td = '<td></td>';
-		var empty_tds = [];
-		for (var i = 0; i < d.getDay(); i++) {
-			empty_tds.push(empty_td);
-		}
-		$tr.append(empty_tds.join(''));
-		for (; d.getMonth() == this.focus_date.getMonth(); d = this._next_date(d)) {
-			if ($tr.children().length == 7) {
-				$tbody.append($tr);
-				$tr = $('<tr></tr>');
-			}
 
-			var cell_classes = [];
-			if (this.selected_date && !(d - this.selected_date)) {
-				cell_classes.push('selected');
-			}
-			if (!(d - this.today_date)) {
-				cell_classes.push('today');
-			}
-			var cell_class_string;
-			if (cell_classes.length) {
-				cell_class_string = ' class="' + cell_classes.join(' ') + '"';
+		$tbody.find('a').click(function(e) {
+			e.preventDefault();
+
+			var d = _this._copy_date_with_time(_this.focus_date, _this.time);
+			d.setDate(+ $(this).text());
+
+			if (_this.options.allow_deselect && _this.selected_date && !(d - _this.selected_date)) {
+				_this.select_date(undefined);
 			} else {
-				cell_class_string = '';
+				_this.select_date(d);
 			}
-
-			var $td = $('<td' + cell_class_string + '><a href="#"' + cell_class_string + '>' + d.getDate() + '</a></td>');
-			var $a = $td.children();
-			$a.click(function(e) {
-				e.preventDefault();
-				var d = _this._copy_date_with_time($(this).data('date.calendar_date_picker'), _this.time);
-				if (_this.options.allow_deselect && _this.selected_date && !(d - _this.selected_date)) {
-					_this.select_date(undefined);
-				} else {
-					_this.select_date(d);
-				}
-			});
-			$a.data('date.calendar_date_picker', d);
-			$tr.append($td);
-		}
-		empty_tds = [];
-		for (var j = d.getDay(); j && j < 7; j++) {
-			empty_tds.push(empty_td);
-		}
-		$tr.append(empty_tds.join(''));
-		$tbody.append($tr);
-
-		$table.append($tbody);
+		});
 
 		return $table;
 	},
 
 	_refresh_calendar_table_classes: function($table) {
-		var selected = this.selected_date;
+		var selected_d = this.selected_date && this._same_month(this.focus_date, this.selected_date) && this.selected_date.getDate();
+
 		var selected_class = 'selected';
 
 		$table.find('a.selected').each(function() {
@@ -223,9 +200,7 @@ $.extend(CalendarDatePicker.prototype, {
 			var $a = $(this);
 			var $td = $a.parent();
 
-			var a_date = $a.data('date.calendar_date_picker');
-
-			if (selected && !(a_date - selected)) {
+			if ($a.text() == selected_d) {
 				$a.addClass(selected_class);
 				$td.addClass(selected_class);
 			}
@@ -266,8 +241,8 @@ $.extend(CalendarDatePicker.prototype, {
 		$div.append($table);
 
 		if (this._does_datetime()) {
-			var $time_div = $('<div class="time"><label>' + escape_html(this.options.time_text) + '</label><input type="text" /></div>');
-			var $time_field = $time_div.children('input');
+			var $time_div = $('<div class="time"><label>' + escape_html(this.options.time_text) + '<input type="text" /></label></div>');
+			var $time_field = $time_div.find('input');
 			$time_field.time_field({ on_invalid: '00:00' });
 			$time_field.trigger('time_field:set_time', this.time);
 
@@ -317,10 +292,71 @@ $.extend(CalendarDatePicker.prototype, {
 		return this.$_escape_html_elem.text(s).html();
 	},
 
+	_thead_month_html: function() {
+		return '<thead class="month"><tr><th colspan="7"><a class="previous_month" href="#"></a><a class="next_month" href="#"></a><span class="month"></span> <span class="year"></span></th></tr></thead>';
+	},
+
+	_thead_days_of_week_html: function() {
+		return '<thead class="days_of_week"><tr><th>' + this._days_of_week_ths().join('</th><th>') + '</th></tr></thead>';
+	},
+
+	_tbody_html: function() {
+		var first_day_of_week = this._copy_month(this.focus_date).getDay();
+		var cur_d = 1;
+		var last_d = this._previous_date(this._next_month(this.focus_date)).getDate();
+		var selected_d = this.selected_date && this._same_month(this.focus_date, this.selected_date) && this.selected_date.getDate();
+		var today_d = this._same_month(this.focus_date, this.today_date) && this.today_date.getDate();
+
+		var td_collections = [];
+
+		td_collections.push(this._date_tds(first_day_of_week, selected_d, today_d, cur_d, last_d));
+
+		for (cur_d = 8 - first_day_of_week; cur_d <= last_d; cur_d += 7) {
+			td_collections.push(this._date_tds(0, selected_d, today_d, cur_d, last_d));
+		}
+
+		return '<tbody><tr>' + td_collections.join('</tr><tr>') + '</tr></tbody>';
+	},
+
+	_date_tds: function(n_skip_cells, selected_d, today_d, first_d, last_d) {
+		var tds = [];
+
+		var empty_td = '<td></td>';
+		for (var i = 0; i < n_skip_cells; i++) {
+			tds.push(empty_td);
+		}
+
+		for (var d = first_d; tds.length < 7 && d <= last_d; d++) {
+			var cell_classes = [];
+			if (d === selected_d) {
+				cell_classes.push('selected');
+			}
+			if (d === today_d) {
+				cell_classes.push('today');
+			}
+			var cell_class_string;
+			if (cell_classes.length) {
+				cell_class_string = ' class="' + cell_classes.join(' ') + '"';
+			} else {
+				cell_class_string = '';
+			}
+
+			var td = '<td' + cell_class_string + '><a href="#"' + cell_class_string + '>' + d + '</a></td>';
+
+			tds.push(td);
+		}
+
+		for (var j = last_d + 1; j < first_d + 7; j++) {
+			tds.push(empty_td);
+		}
+
+		return tds.join('');
+	},
+
 	_days_of_week_ths: function() {
 		var _this = this;
 		var strs = $.map(this.options.day_of_week_texts, escape_html);
-		return '<th>' + strs.join('</th><th>') + '</th>';
+		return strs;
 	}
 });
 
