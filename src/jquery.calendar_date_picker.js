@@ -36,7 +36,7 @@
  *   - tbody: a <tr> with <td>s containing <a>s with dates
  *     - a.today: today's date (wrapped in a td.today
  *     - a.selected: the selected date (may also be .today), in a td.selected
- *     - a.hover: the date over which the mouse is hovering
+ *     - a:hover: the date over which the mouse is hovering
  *     - <td>s without <a>s will usually be present
  * - div.time: holds time-of-day label and text (optional)
  *   - label: see options.time_text
@@ -201,11 +201,6 @@ $.extend(CalendarDatePicker.prototype, {
 				} else {
 					_this.select_date(d);
 				}
-			});
-			$a.hover(function() {
-				$(this).addClass('hover');
-			}, function() {
-				$(this).removeClass('hover');
 			});
 			$a.data('date.calendar_date_picker', d);
 			$tr.append($td);
