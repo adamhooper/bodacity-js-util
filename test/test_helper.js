@@ -52,4 +52,11 @@ window.stub_ajax = function(retval, block, validate_params_block, error) {
   return ret;
 };
 
+window.disable_animations = function(callback) {
+	var off = $.fx.off;
+	$.fx.off = true;
+	callback();
+	$.fx.off = off;
+};
+
 })(jQuery);
