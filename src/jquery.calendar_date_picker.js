@@ -177,12 +177,22 @@ $.extend(CalendarDatePicker.prototype, {
 				$tr = $('<tr></tr>');
 			}
 
-			var $td = $('<td></td>');
-			var $a = $('<a href="#"></a>');
+			var cell_classes = [];
 			if (this.selected_date && !(d - this.selected_date)) {
-				$a.addClass('selected');
-				$td.addClass('selected');
+				cell_classes.push('selected');
 			}
+			if (!(d - this.today_date)) {
+				cell_classes.push('today');
+			}
+			var cell_class_string;
+			if (cell_classes.length) {
+				cell_class_string = ' class="' + cell_classes.join(' ') + '"';
+			} else {
+				cell_class_string = '';
+			}
+
+			var $td = $('<td' + cell_class_string + '><a href="#"' + cell_class_string + '>' + d.getDate() + '</a></td>');
+			var $a = $td.children();
 			$a.click(function(e) {
 				e.preventDefault();
 				var d = _this._copy_date_with_time($(this).data('date.calendar_date_picker'), _this.time);
@@ -197,9 +207,7 @@ $.extend(CalendarDatePicker.prototype, {
 			}, function() {
 				$(this).removeClass('hover');
 			});
-			$a.text(d.getDate());
 			$a.data('date.calendar_date_picker', d);
-			$td.append($a);
 			$tr.append($td);
 		}
 		for (var j = d.getDay(); j && j < 7; j++) {
@@ -209,30 +217,27 @@ $.extend(CalendarDatePicker.prototype, {
 
 		$table.append($tbody);
 
-		this._refresh_calendar_table_classes($table);
-
 		return $table;
 	},
 
 	_refresh_calendar_table_classes: function($table) {
-		$table.find('tbody td').removeClass('today');
-		$table.find('tbody td a').removeClass('today');
-		$table.find('tbody td').removeClass('selected');
-		$table.find('tbody td a').removeClass('selected');
-
-		var today = this.today_date;
 		var selected = this.selected_date;
+		var selected_class = 'selected';
 
-		$table.find('tbody td a').each(function() {
+		$table.find('a.selected').each(function() {
+			$(this).removeClass(selected_class);
+			$(this).parent().removeClass(selected_class);
+		});
+
+		$table.find('tbody a').each(function() {
 			var $a = $(this);
+			var $td = $a.parent();
+
 			var a_date = $a.data('date.calendar_date_picker');
-			if (!(a_date - today)) {
-				$a.addClass('today');
-				$a.parent().addClass('today');
-			}
+
 			if (selected && !(a_date - selected)) {
-				$a.addClass('selected');
-				$a.parent().addClass('selected');
+				$a.addClass(selected_class);
+				$td.addClass(selected_class);
 			}
 		});
 	},
