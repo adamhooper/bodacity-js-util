@@ -20,8 +20,11 @@ CONTENTS
                     URL, free of "../" path components.
 * channeler.js: wraps jQuery's $.ajax() so that subsequent requests cancel
                 earlier ones and event handlers can be registered independently.
+* jquery.calendar_date_picker.js: picks a date in a calendar interface.
+* jquery.datetime_picker_field.js: turns an HTML input into a datetime picker.
 * jquery.excerpt.js: trims a block-level element's text content to fit a
                      set number of lines.
+* jquery.time_field.js: turns an HTML input into a time-of-day picker.
 * utf8.js: presents a String as an Array of Numbers representing utf-8 bytes.
 
 LICENSE

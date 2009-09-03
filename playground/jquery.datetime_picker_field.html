@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+											"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>Bodacity JavaScript Utilities</title>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" type="text/css" href="style.css">
+
+		<!-- jquery.calendar_date_picker.js CSS -->
+		<link rel="stylesheet" type="text/css" href="jquery.calendar_date_picker.css">
+		<!--[if lte IE 6]>
+			<link rel="stylesheet" type="text/css" href="jquery.calendar_date_picker.ie6.css">
+		<![endif]-->
+	</head>
+	<body>
+		<h1>jquery.datetime_picker_field.js</h1>
+		<p class="lede">
+			Turns an HTML input into a datetime picker.
+		</p>
+		<h2>Usage</h2>
+		<ol>
+			<li>
+				Include jQuery 1.3+,
+				<a href="../src/jquery.calendar_date_picker.js">jquery.datetime_picker_field.js</a>,
+				<a href="../src/jquery.calendar_date_picker.js">jquery.calendar_date_picker.js</a>,
+				<a href="jquery.calendar_date_picker.css">some CSS</a>
+				(this example includes
+				<a href="jquery.calendar_date_picker.ie6.css">some IE6-only CSS as well</a>),
+			  and (optionally)
+				<a href="../src/jquery.time_field.js">jquery.time_field.js</a>
+				in your HTML
+			</li>
+			<li>
+				Call <tt>$('input.datetime').datetime_picker_field();</tt> to transform
+				all inputs with HTML class <tt>datetime</tt> into calendars.
+			</li>
+		</ol>
+		<p>
+			The picker relies upon
+			<a href="jquery.calendar_date_picker.html">jquery.calendar_date_picker.js</a>
+			for the majority of its functionality. When the user focuses the field,
+			the calendar appears; when the field loses focus, the calendar
+			disappears. If the user prefers to type a date, the calendar will follow
+			the user's input.
+		</p>
+		<p>
+			You should specify how to parse and format dates. One great solution is
+			to incorporate <a href="http://www.datejs.com/">Datejs</a> into your
+			code: it is great at parsing free-form text.
+		</p>
+		<p>
+			Options:
+		</p>
+		<dl>
+			<dt>calendar</dt>
+			<dd>
+				Options to pass to
+				<a href="jquery.calendar_date_picker.html">calendar_date_picker</a>.
+			</dd>
+
+			<dt>parse_callback</dt>
+			<dd>
+				Function which accepts a String and returns a Date. With Datejs, use
+				<tt>function(s) { return Date.parse(s); }</tt>
+			</dd>
+
+			<dt>format_callback</dt>
+			<dd>
+				Function which accepts a Date (or <tt>undefined</tt>) and returns a
+				String for display in the text field. (In situations where the String
+				is later parsed by a back-end program, the String must be parseable by
+				the back-end.) With Datejs, the <tt>format</tt> method helps: for
+				instance,
+				<tt>function(d) { return d &amp;&amp; d.format('MMM d, yyyy h:mm tt') || ''; }</tt>
+			</dd>
+
+			<dt>open_calendar_callback</dt>
+			<dd>
+				Optional callback, called when the calendar opens. Use this instead of
+				listening for field focus: the datetime picker has its own text field
+				which may steal actual focus.
+			</dd>
+
+			<dt>close_calendar_callback</dt>
+			<dd>
+				Optional callback, called when the calendar closes. Use this instead of
+				listening for field blur: the datetime picker has its own text field
+				which may steal actual focus.
+			</dd>
+		</dl>
+
+		<h2>Example</h2>
+
+		<script type="text/javascript" src="jquery-1.3.2.js"></script>
+		<script type="text/javascript" src="date.js"></script>
+		<script type="text/javascript" src="../src/jquery.time_field.js"></script>
+		<script type="text/javascript" src="../src/jquery.calendar_date_picker.js"></script>
+		<script type="text/javascript" src="../src/jquery.datetime_picker_field.js"></script>
+
+		<pre id="example1_code">var $form = $('#example1');
+$form.submit(function(e) { e.preventDefault(); });
+
+var $date1 = $form.find('input.date1');
+$date1.datetime_picker_field({
+	calendar: {
+		allow_deselect: true,
+		previous_month_text: '&lt;',
+		next_month_text: '&gt;'
+	},
+	parse_callback: function(s) { return Date.parse(s); },
+	format_callback: function(d) { return d &amp;&amp; d.toString('MMM d, yyyy') || ''; }
+});
+
+var $date2 = $form.find('input.date2');
+$date2.datetime_picker_field({
+	calendar: {
+		allow_deselect: true,
+		previous_month_text: '&lt;',
+		next_month_text: '&gt;',
+		time_text: 'Time:'
+	},
+	parse_callback: function(s) { return Date.parse(s); },
+	format_callback: function(d) { return d &amp;&amp; d.toString('MMM d, yyyy h:mm tt') || ''; }
+});</pre>
+		<form id="example1" action="">
+			<p>Select a date: <input type="text" class="date1"></p>
+			<p>Select a date (initial value "2009-09-03 6:12pm"): <input type="text" class="date2" value="2009-09-03 6:12pm"></p>
+			<p>Click away to hide the calendar...</p>
+		</form>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				var $pre = $('#example1_code');
+				var code = $pre.text();
+				eval(code);
+			});
+		</script>
+	</body>
+</html>
