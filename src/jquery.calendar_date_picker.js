@@ -140,9 +140,8 @@ $.extend(CalendarDatePicker.prototype, {
 	_create_calendar: function() {
 		var _this = this;
 
-		var $table = $('<table></table>');
-
-		var $thead_month = $('<thead class="month"><tr><th colspan="7"><a class="previous_month" href="#"></a><a class="next_month" href="#"></a><span class="month"></span> <span class="year"></span></th></tr></thead>');
+		var $table = $('<table><thead class="month"><tr><th colspan="7"><a class="previous_month" href="#"></a><a class="next_month" href="#"></a><span class="month"></span> <span class="year"></span></th></tr></thead><thead class="days_of_week"><tr>' + this._days_of_week_ths() + '</tr></thead><tbody></tbody></table>');
+		var $thead_month = $table.children(':eq(0)');
 		$thead_month.find('a.previous_month').text(this.options.previous_month_text);
 		$thead_month.find('a.previous_month').click(function(e) {
 			_this._on_previous_month_clicked();
@@ -155,18 +154,16 @@ $.extend(CalendarDatePicker.prototype, {
 			_this._on_next_month_clicked();
 			e.preventDefault();
 		});
-		$table.append($thead_month);
 
-		var thead_str = '<thead class="days_of_week"><tr>' + this._days_of_week_ths() + '</tr></thead>';
-
-		$table.append(thead_str);
-
-		var $tbody = $('<tbody></tbody>');
+		var $tbody = $table.children('tbody');
 		var $tr = $('<tr></tr>');
 		var d = this._copy_date(this.focus_date);
+		var empty_td = '<td></td>';
+		var empty_tds = [];
 		for (var i = 0; i < d.getDay(); i++) {
-			$tr.append('<td></td>');
+			empty_tds.push(empty_td);
 		}
+		$tr.append(empty_tds.join(''));
 		for (; d.getMonth() == this.focus_date.getMonth(); d = this._next_date(d)) {
 			if ($tr.children().length == 7) {
 				$tbody.append($tr);
@@ -201,9 +198,11 @@ $.extend(CalendarDatePicker.prototype, {
 			$a.data('date.calendar_date_picker', d);
 			$tr.append($td);
 		}
+		empty_tds = [];
 		for (var j = d.getDay(); j && j < 7; j++) {
-			$tr.append('<td></td>');
+			empty_tds.push(empty_td);
 		}
+		$tr.append(empty_tds.join(''));
 		$tbody.append($tr);
 
 		$table.append($tbody);
@@ -263,11 +262,12 @@ $.extend(CalendarDatePicker.prototype, {
 		var $div = $('<div class="calendar_date_picker"></div>');
 
 		var $table = this._create_calendar();
+
 		$div.append($table);
 
 		if (this._does_datetime()) {
-			var $label = $('<label></label>').text(this.options.time_text);
-			var $time_field = $('<input type="text"/>');
+			var $time_div = $('<div class="time"><label>' + escape_html(this.options.time_text) + '</label><input type="text" /></div>');
+			var $time_field = $time_div.children('input');
 			$time_field.time_field({ on_invalid: '00:00' });
 			$time_field.trigger('time_field:set_time', this.time);
 
@@ -276,9 +276,6 @@ $.extend(CalendarDatePicker.prototype, {
 				_this.select_date(d);
 			});
 
-			$label.append($time_field);
-			var $time_div = $('<div class="time"></div>');
-			$time_div.append($label);
 			$div.append($time_div);
 		}
 
