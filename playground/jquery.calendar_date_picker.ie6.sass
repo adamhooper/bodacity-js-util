@@ -1,0 +1,10 @@
+// We position the previous/next arrows with position: absolute and so we need
+// to hard-code the height in IE6.
+
+div.calendar_date_picker
+  // 15px + 13px + 2*2px + 6*19px
+  :height 146px
+
+  a.previous_month, a.next_month
+    // + 2px (for borders)
+    :height 148px

@@ -1,0 +1,100 @@
+// This is a Sass file.
+// You may compile it into CSS using freely-available software from
+// http://sass-lang.com/
+
+!color_blue = #039
+!color_light_blue = #cbd7e7
+!color_light_gray = #dedede
+!color_lightest_gray = #f6f6f6
+!font_family = "Helvetica Neue, Helvetica, Arial, sans-serif"
+
+div.calendar_date_picker
+  :display block
+  :position relative
+  :background white
+  :z-index 1
+
+  :width 154px
+  :border-top = "1px solid" !color_light_gray
+  :border-bottom = "1px solid" !color_light_gray
+
+  table
+    :border-collapse collapse
+
+    :margin-left 11px
+
+    :font = "normal 11px" !font_family
+    :line-height 13px
+
+  a
+    :text-decoration none
+
+    &.previous_month
+      :display block
+      :position absolute
+      :width 10px
+      :left 0
+      :top -1px
+      :bottom -1px
+      :overflow hidden
+      :background = !color_light_gray
+
+    &.next_month
+      :display block
+      :position absolute
+      :width 10px
+      :right -1px
+      :top -1px
+      :bottom -1px
+      :overflow hidden
+      :background = !color_light_gray
+
+  th
+    :text-align center
+
+  thead.month th
+    :padding 2px 0
+    :text-transform uppercase
+    :font-weight normal
+
+    span.year
+      :padding-left 5px
+
+  thead.days_of_week th
+    :background = !color_lightest_gray
+
+  td, thead.days_of_week th
+    :width 19px
+    :height 13px
+    :padding 0
+    :margin 0
+
+  td
+    :text-align right
+
+    a
+      :display block
+      :width 13px
+      :padding 3px
+
+      &.selected, &:hover
+        :padding 1px
+        :border = "2px solid" !color_blue
+
+      &.today
+        :background = !color_light_blue
+
+        &.selected
+          // higher specificity
+          :padding 1px
+          :border = "2px solid" !color_blue
+
+  div.time
+    :margin 5px 11px
+    :text-align center
+    :font = "normal 11px" !font_family
+
+    input
+      :width 6em
+      :margin-left 5px
+      :font = "normal 11px" !font_family

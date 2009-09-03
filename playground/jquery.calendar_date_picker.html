@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+											"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>Bodacity JavaScript Utilities</title>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" type="text/css" href="style.css">
+
+		<!-- jquery.calendar_date_picker.js CSS -->
+		<link rel="stylesheet" type="text/css" href="jquery.calendar_date_picker.css">
+		<!--[if lte IE 6]>
+			<link rel="stylesheet" type="text/css" href="jquery.calendar_date_picker.ie6.css">
+		<![endif]-->
+	</head>
+	<body>
+		<h1>jquery.time_field.js</h1>
+		<p class="lede">
+			Picks a date in a calendar interface.
+		</p>
+		<h2>Usage</h2>
+		<ol>
+			<li>
+				Include jQuery 1.3+,
+				<a href="../src/jquery.calendar_date_picker.js">jquery.calendar_date_picker.js</a>,
+				<a href="jquery.calendar_date_picker.css">some CSS</a>
+				(this example includes
+				<a href="jquery.calendar_date_picker.ie6.css">some IE6-only CSS as well</a>),
+			  and (optionally)
+				<a href="../src/jquery.time_field.js">jquery.time_field.js</a>
+				in your HTML
+			</li>
+			<li>
+				Call <tt>$('div.calendar').calendar_date_picker();</tt> to transform
+				all divs with HTML class <tt>calendar</tt> into calendars. The divs
+				will be emptied of any existing content in the process.
+			</li>
+		</ol>
+		<p>
+			The calendar is a table of dates. When the user clicks one of those
+			dates, a <tt>calendar_date_picker:date_selected</tt> event will fire with
+			either a <a href="https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Global_Objects/Date">Date</a>
+			or <tt>null</tt> as argument.
+		</p>
+		<p>
+			You may also trigger a <tt>calendar_date_picker:select_date</tt> event on
+			the <tt>div</tt>, passing a Date argument, to have it select that date
+			(and fire the <tt>calendar_date_picker:date_selected</tt> signal).
+		</p>
+		<p>
+			Options:
+		</p>
+		<dl>
+			<dt>previous_month_text</dt>
+			<dd>
+				(default <tt>&lt; Prev</tt>) Text for the "previous month" label.
+			</dd>
+
+			<dt>next_month_text</dt>
+			<dd>
+				(default <tt>Next &gt;</tt>) Text for the "next month" label.
+			</dd>
+
+			<dt>focus_date</dt>
+			<dd>
+				(default <tt>today_date</tt>) Date on which the calendar should focus.
+				In other words, the month displayed when the calendar first appears.
+			</dd>
+
+			<dt>selected_date</dt>
+			<dd>
+				(default <tt>null</tt>) Selected datetime, with minute or day precision.
+			</dd>
+
+			<dt>today_date</dt>
+			<dd>
+				(default now) Today's date (which gets a special HTML class).
+			</dd>
+
+			<dt>month_texts</dt>
+			<dd>
+				(default <tt>['January', 'February', ...]</tt>) Text for month labels.
+			</dd>
+
+			<dt>day_of_week_texts</dt>
+			<dd>
+				(default <tt>['S', 'M', ...]</tt>) Text for day-of-week labels.
+			</dd>
+
+			<dt>time_text</dt>
+			<dd>
+				(default <tt>undefined</tt>) String label for time-of-day text input.
+				If undefined, do not allow time-of-day input.
+			</dd>
+
+			<dt>allow_deselect</dt>
+			<dd>
+				(default <tt>false</tt>) If true, clicking the selected date will
+				change the selection to <tt>undefined</tt>.
+			</dd>
+		</dl>
+		<p>
+			Inspiration: is it just me, or are most date pickers frustrating to
+			include in web pages? This date picker can be created programmatically
+			and does not need to be associated with a text field (though it is easy
+			to do so, using
+			<a href="jquery.datetime_picker_field.html">jquery.datetime_picker_field.js</a>).
+		</p>
+
+		<h2>Examples</h2>
+
+		<h3>Example 1: date-only</h3>
+		<script type="text/javascript" src="jquery-1.3.2.js"></script>
+		<script type="text/javascript" src="../src/jquery.calendar_date_picker.js"></script>
+
+		<pre id="example1_code">var $div = $('#example1');
+var $src = $div.find('div.calendar');
+var $sink = $div.find('tt');
+var n = 0;
+
+$src.bind('calendar_date_picker:date_selected', function(e, datetime) {
+	n += 1;
+	$sink.text('(' + n + ') calendar_date_picker:date_selected with arg "' + datetime + '"');
+});
+
+$src.calendar_date_picker({
+	allow_deselect: true,
+	previous_month_text: '&lt;',
+	next_month_text: '&gt;'
+});</pre>
+		<div id="example1">
+			<div class="calendar">
+				<p>(calendar date picker will go here on page load)</p>
+			</div>
+			<p>
+				Last event:
+				<tt>(click in the calendar to fire events...)</tt>
+			</p>
+		</div>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				var $pre = $('#example1_code');
+				var code = $pre.text();
+				eval(code);
+			});
+		</script>
+
+		<h3>Example 2: date/time</h3>
+		<script type="text/javascript" src="../src/jquery.time_field.js"></script>
+
+		<pre id="example2_code">var $div = $('#example2');
+var $src = $div.find('div.calendar');
+var $sink = $div.find('tt');
+var n = 0;
+
+$src.bind('calendar_date_picker:date_selected', function(e, datetime) {
+	n += 1;
+	$sink.text('(' + n + ') calendar_date_picker:date_selected with arg "' + datetime + '"');
+});
+
+$src.calendar_date_picker({
+	allow_deselect: true,
+	previous_month_text: '&lt;',
+	next_month_text: '&gt;',
+	time_text: 'Time:'
+});</pre>
+		<div id="example2">
+			<div class="calendar">
+				<p>(calendar date picker will go here on page load)</p>
+			</div>
+			<p>
+				Last event:
+				<tt>(click in the calendar and change the time to fire events...)</tt>
+			</p>
+		</div>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				var $pre = $('#example2_code');
+				var code = $pre.text();
+				eval(code);
+			});
+		</script>
+	</body>
+</html>

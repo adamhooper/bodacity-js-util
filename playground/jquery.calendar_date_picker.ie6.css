@@ -1,0 +1,4 @@
+div.calendar_date_picker {
+  height: 146px; }
+  div.calendar_date_picker a.previous_month, div.calendar_date_picker a.next_month {
+    height: 148px; }

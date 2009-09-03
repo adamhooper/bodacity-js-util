@@ -1,0 +1,70 @@
+div.calendar_date_picker {
+  display: block;
+  position: relative;
+  background: white;
+  z-index: 1;
+  width: 154px;
+  border-top: 1px solid #dedede;
+  border-bottom: 1px solid #dedede; }
+  div.calendar_date_picker table {
+    border-collapse: collapse;
+    margin-left: 11px;
+    font: normal 11px Helvetica Neue, Helvetica, Arial, sans-serif;
+    line-height: 13px; }
+  div.calendar_date_picker a {
+    text-decoration: none; }
+    div.calendar_date_picker a.previous_month {
+      display: block;
+      position: absolute;
+      width: 10px;
+      left: 0;
+      top: -1px;
+      bottom: -1px;
+      overflow: hidden;
+      background: #dedede; }
+    div.calendar_date_picker a.next_month {
+      display: block;
+      position: absolute;
+      width: 10px;
+      right: -1px;
+      top: -1px;
+      bottom: -1px;
+      overflow: hidden;
+      background: #dedede; }
+  div.calendar_date_picker th {
+    text-align: center; }
+  div.calendar_date_picker thead.month th {
+    padding: 2px 0;
+    text-transform: uppercase;
+    font-weight: normal; }
+    div.calendar_date_picker thead.month th span.year {
+      padding-left: 5px; }
+  div.calendar_date_picker thead.days_of_week th {
+    background: #f6f6f6; }
+  div.calendar_date_picker td, div.calendar_date_picker thead.days_of_week th {
+    width: 19px;
+    height: 13px;
+    padding: 0;
+    margin: 0; }
+  div.calendar_date_picker td {
+    text-align: right; }
+    div.calendar_date_picker td a {
+      display: block;
+      width: 13px;
+      padding: 3px; }
+      div.calendar_date_picker td a.selected, div.calendar_date_picker td a:hover {
+        padding: 1px;
+        border: 2px solid #003399; }
+      div.calendar_date_picker td a.today {
+        background: #cbd7e7; }
+        div.calendar_date_picker td a.today.selected {
+          padding: 1px;
+          border: 2px solid #003399; }
+  div.calendar_date_picker div.time {
+    margin: 5px 11px;
+    text-align: center;
+    font: normal 11px Helvetica Neue, Helvetica, Arial, sans-serif; }
+    div.calendar_date_picker div.time input {
+      width: 6em;
+      margin-left: 5px;
+      font: normal 11px Helvetica Neue, Helvetica, Arial, sans-serif; }
