@@ -176,7 +176,9 @@ $.extend(CalendarDatePicker.prototype, {
 			var d = _this._copy_date_with_time(_this.focus_date, _this.time);
 			d.setDate(+ $(this).text());
 
-			if (_this.options.allow_deselect && _this.selected_date && !(d - _this.selected_date)) {
+			var selected_datetime = _this._copy_date_with_time(_this.selected_date, _this.time);
+
+			if (_this.options.allow_deselect && selected_datetime && !(d - selected_datetime)) {
 				_this.select_date(undefined);
 			} else {
 				_this.select_date(d);

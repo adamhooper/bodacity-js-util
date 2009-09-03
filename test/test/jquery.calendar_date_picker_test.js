@@ -148,6 +148,17 @@ test_with_mock('clicking a selected link deselects it', { selected_date: new Dat
 	equals(n, 1);
 });
 
+test_with_mock('clicking a selected link deselects it even when time is used', { selected_date: new Date(2008, 11, 5, 6, 15), allow_deselect: true, time_text: 'X' }, function($div) {
+	var n = 0;
+	$div.bind('calendar_date_picker:date_selected', function(_, d) {
+		equals(d, undefined, 'no date passed');
+		n++;
+	});
+
+	$div.find('a.selected').click();
+	equals(n, 1);
+});
+
 test_with_mock('deselecting does not work if allow_deselect is false', { selected_date: new Date(2008, 11, 5), allow_deselect: false }, function($div) {
 	var n = 0;
 	$div.bind('calendar_date_picker:date_selected', function() { n++; });
