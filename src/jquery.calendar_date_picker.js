@@ -1,5 +1,7 @@
 (function($) {
 
+var undefined; // help minification
+
 /*
  * Turns a <div> into a date picker.
  *
@@ -45,7 +47,7 @@
  *              jquery.time_field.js)
  */
 $.fn.calendar_date_picker = function(options) {
-	return $(this).each(function() {
+	return this.each(function() {
 		new CalendarDatePicker($(this), options);
 	});
 };
@@ -74,8 +76,9 @@ function CalendarDatePicker($div, options) {
 	}, options);
 
 	this._extract_options();
-	this._redraw();
 	this._attach();
+
+	this._redraw();
 }
 
 $.extend(CalendarDatePicker.prototype, {
@@ -130,7 +133,7 @@ $.extend(CalendarDatePicker.prototype, {
 	},
 
 	_same_year: function(d1, d2) {
-		return d1.getYear() == d2.getYear();
+		return d1.getFullYear() == d2.getFullYear();
 	},
 
 	_same_month: function(d1, d2) {
@@ -138,7 +141,15 @@ $.extend(CalendarDatePicker.prototype, {
 	},
 
 	_last_date_of_month: function(d) {
-		return this._previous_date(this._next_month(d));
+		return new Date(d.getFullYear(), d.getMonth() + 1, 0);
+	},
+
+	_selected_date_date_in_focus_month: function() {
+		if (this.selected_date && this._same_month(this.selected_date, this.focus_date)) {
+			return this.selected_date.getDate();
+		} else {
+			return undefined;
+		}
 	},
 
 	_extract_options: function() {
@@ -153,49 +164,10 @@ $.extend(CalendarDatePicker.prototype, {
 		this.time = this._does_datetime() ? this._copy_time(this.options.selected_date || this.options.today_date || new Date()) : '00:00';
 	},
 
-	_create_calendar: function() {
-		var _this = this;
-
-		var $table = $('<table>' + this._thead_month_html() + this._thead_days_of_week_html() + this._tbody_html() + '</table>');
-
-		var $thead_month = $table.children(':eq(0)');
-		$thead_month.find('a.previous_month').text(this.options.previous_month_text);
-		$thead_month.find('a.previous_month').click(function(e) {
-			_this._on_previous_month_clicked();
-			e.preventDefault();
-		});
-		$thead_month.find('span.month').text(this.options.month_texts[this.focus_date.getMonth()]);
-		$thead_month.find('span.year').text(this.focus_date.getFullYear());
-		$thead_month.find('a.next_month').text(this.options.next_month_text);
-		$thead_month.find('a.next_month').click(function(e) {
-			_this._on_next_month_clicked();
-			e.preventDefault();
-		});
-
-		var $tbody = $table.children('tbody');
-
-		$tbody.find('a').click(function(e) {
-			e.preventDefault();
-
-			var d = _this._copy_date_with_time(_this.focus_date, _this.time);
-			d.setDate(+ $(this).text());
-
-			var selected_datetime = _this._copy_date_with_time(_this.selected_date, _this.time);
-
-			if (_this.options.allow_deselect && selected_datetime && !(d - selected_datetime)) {
-				_this.select_date(undefined);
-			} else {
-				_this.select_date(d);
-			}
-		});
-
-		return $table;
-	},
-
 	_refresh_calendar_table_classes: function($table) {
 		var selected_class = 'selected';
 
-		var selected_d = this.selected_date && this._same_month(this.focus_date, this.selected_date) && this.selected_date.getDate();
+		var selected_d = this._selected_date_date_in_focus_month();
 
 		var $tbody = $table.children('tbody');
 
@@ -214,6 +186,60 @@ $.extend(CalendarDatePicker.prototype, {
 		this.$div.bind('calendar_date_picker:select_date', function(_, d) {
 			_this.select_date(d);
 		});
+	},
+
+	_bind_dom_table_events: function() {
+		var _this = this;
+
+		var $table = this.$div.children().children('table');
+		var $thead_month = $table.children(':eq(0)');
+		var $th = $thead_month.children().children();
+		var $previous_month_a = $th.children('a.previous_month');
+		$previous_month_a.text(this.options.previous_month_text);
+		$previous_month_a.click(function(e) {
+			e.preventDefault();
+			_this._on_previous_month_clicked();
+		});
+		var $next_month_a = $th.children('a.next_month');
+		$next_month_a.text(this.options.next_month_text);
+		$next_month_a.click(function(e) {
+			e.preventDefault();
+			_this._on_next_month_clicked();
+		});
+
+		var $tbody = $table.children('tbody');
+
+		$tbody.click(function(e) {
+			var $a = $(e.originalTarget);
+			if ($a[0] && $a[0].nodeName == 'A') {
+				e.preventDefault();
+
+				var d = _this._copy_date_with_time(_this.focus_date, _this.time);
+				d.setDate(+ $a.text());
+
+				var selected_datetime = _this._copy_date_with_time(_this.selected_date, _this.time);
+
+				if (_this.options.allow_deselect && selected_datetime && !(d - selected_datetime)) {
+					_this.select_date(undefined);
+				} else {
+					_this.select_date(d);
+				}
+			}
+		});
+	},
+
+	_bind_dom_time_events: function() {
+		if (this._does_datetime()) {
+			var _this = this;
+			var $time_field = this.$div.children().children('div.time').find('input');
+			$time_field.time_field({ on_invalid: '00:00' });
+			$time_field.trigger('time_field:set_time', this.time);
+
+			$time_field.bind('time_field:time_changed', function(_, time) {
+				var d = _this._copy_date_with_time(_this.selected_date, time);
+				_this.select_date(d);
+			});
+		}
 	},
 
 	_does_datetime: function() {
@@ -235,34 +261,15 @@ $.extend(CalendarDatePicker.prototype, {
 
 		this.$div.empty();
 
-		var $div = $('<div class="calendar_date_picker"></div>');
+		this.$div.append('<div class="calendar_date_picker">' + this._table_html() + this._time_div_html() + '</div>');
 
-		var $table = this._create_calendar();
-
-		$div.append($table);
-
-		if (this._does_datetime()) {
-			var $time_div = $('<div class="time"><label>' + escape_html(this.options.time_text) + '<input type="text" /></label></div>');
-			var $time_field = $time_div.find('input');
-			$time_field.time_field({ on_invalid: '00:00' });
-			$time_field.trigger('time_field:set_time', this.time);
-
-			$time_field.bind('time_field:time_changed', function(_, time) {
-				var d = _this._copy_date_with_time(_this.selected_date, time);
-				_this.select_date(d);
-			});
-
-			$div.append($time_div);
-		}
-
-		this.$div.append($div);
+		this._bind_dom_table_events();
+		this._bind_dom_time_events();
 	},
 
 	_refresh_calendar: function() {
-		var $table = this._create_calendar();
-
-		this.$div.find('table').remove(); // if we have one
-		this.$div.children('div.calendar_date_picker').prepend($table);
+		this.$div.children().children('table').replaceWith(this._table_html());
+		this._bind_dom_table_events();
 	},
 
 	select_date: function(d) {
@@ -286,15 +293,12 @@ $.extend(CalendarDatePicker.prototype, {
 		this._refresh_calendar_table_classes(this.$div.find('table'));
 	},
 
-	_escape_html: function(s) {
-		if (!this.$_escape_html_elem) {
-			this.$_escape_html_elem = $('<div></div>');
-		}
-		return this.$_escape_html_elem.text(s).html();
+	_table_html: function() {
+		return '<table>' + this._thead_month_html() + this._thead_days_of_week_html() + this._tbody_html() + '</table>';
 	},
 
 	_thead_month_html: function() {
-		return '<thead class="month"><tr><th colspan="7"><a class="previous_month" href="#"></a><a class="next_month" href="#"></a><span class="month"></span> <span class="year"></span></th></tr></thead>';
+		return '<thead class="month"><tr><th colspan="7"><a class="previous_month" href="#"></a><a class="next_month" href="#"></a><span class="month">' + escape_html(this.options.month_texts[this.focus_date.getMonth()]) + '</span> <span class="year">' + this.focus_date.getFullYear() + '</span></th></tr></thead>';
 	},
 
 	_thead_days_of_week_html: function() {
@@ -305,7 +309,7 @@ $.extend(CalendarDatePicker.prototype, {
 		var first_day_of_week = this._copy_month(this.focus_date).getDay();
 		var cur_d = 1;
 		var last_d = this._last_date_of_month(this.focus_date).getDate();
-		var selected_d = this.selected_date && this._same_month(this.focus_date, this.selected_date) && this.selected_date.getDate();
+		var selected_d = this._selected_date_date_in_focus_month();
 		var today_d = this._same_month(this.focus_date, this.today_date) && this.today_date.getDate();
 
 		var td_collections = [];
@@ -358,7 +362,15 @@ $.extend(CalendarDatePicker.prototype, {
 		var _this = this;
 		var strs = $.map(this.options.day_of_week_texts, escape_html);
 		return strs;
-	}
+	},
+
+	_time_div_html: function() {
+		if (this._does_datetime()) {
+			return '<div class="time"><label>' + escape_html(this.options.time_text) + '<input type="text" /></label></div>';
+		} else {
+			return '';
+		}
+	},
 });
 
 var _escape_html_elem;

@@ -105,7 +105,7 @@ function test_with_mock(message, options, callback) {
 test_with_mock('previous link focuses previous month', { focus_date: new Date(2008, 0, 1) }, function($div) {
 	equals($div.find('span.month').text(), 'January', 'prereq (month)');
 	equals($div.find('span.year').text(), '2008', 'prereq (year)');
-	$div.find('a.previous_month').click();
+	$div.find('a.previous_month').simulate('click');
 	equals($div.find('span.month').text(), 'December', 'month');
 	equals($div.find('span.year').text(), '2007', 'year');
 });
@@ -113,7 +113,7 @@ test_with_mock('previous link focuses previous month', { focus_date: new Date(20
 test_with_mock('next link focuses next month', { focus_date: new Date(2008, 11, 1) }, function($div) {
 	equals($div.find('span.month').text(), 'December', 'prereq (month)');
 	equals($div.find('span.year').text(), '2008', 'prereq (year)');
-	$div.find('a.next_month').click();
+	$div.find('a.next_month').simulate('click');
 	equals($div.find('span.month').text(), 'January', 'month');
 	equals($div.find('span.year').text(), '2009', 'year');
 });
@@ -124,12 +124,12 @@ test_with_mock('clicking a link triggers calendar_date_picker:date_selected even
 		equals(+ d - new Date(2008, 11, 5), 0, 'selected December 5');
 		n++;
 	});
-	$div.find('a.today').click();
+	$div.find('a.today').simulate('click');
 	equals(n, 1);
 });
 
 test_with_mock('clicking a link makes it .selected', { selected_date: new Date(2008, 11, 4), today_date: new Date(2008, 11, 5) }, function($div) {
-	$div.find('a.today').click();
+	$div.find('a.today').simulate('click');
 	equals($div.find('a.selected')[0], $div.find('a.today')[0]);
 });
 
@@ -144,7 +144,7 @@ test_with_mock('clicking a selected link deselects it', { selected_date: new Dat
 		n++;
 	});
 
-	$div.find('a.selected').click();
+	$div.find('a.selected').simulate('click');
 	equals(n, 1);
 });
 
@@ -155,14 +155,14 @@ test_with_mock('clicking a selected link deselects it even when time is used', {
 		n++;
 	});
 
-	$div.find('a.selected').click();
+	$div.find('a.selected').simulate('click');
 	equals(n, 1);
 });
 
 test_with_mock('deselecting does not work if allow_deselect is false', { selected_date: new Date(2008, 11, 5), allow_deselect: false }, function($div) {
 	var n = 0;
 	$div.bind('calendar_date_picker:date_selected', function() { n++; });
-	$div.find('a.selected').click();
+	$div.find('a.selected').simulate('click');
 	equals(n, 0);
 });
 
@@ -204,7 +204,7 @@ test_with_mock('selecting a new date with time will fire date_selected exactly o
 test_with_mock('clicking a new date will not change the time', { selected_date: new Date(2009, 0, 23, 11, 15), today_date: new Date(2009, 0, 24, 12, 45), time_text: 'X' }, function($div) {
 	var ret;
 	$div.bind('calendar_date_picker:date_selected', function(_, d) { ret = d; });
-	$div.find('a.today').click();
+	$div.find('a.today').simulate('click');
 	ok(!(ret - new Date(2009, 0, 24, 11, 15)));
 });
 
