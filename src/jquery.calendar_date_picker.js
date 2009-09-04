@@ -137,6 +137,10 @@ $.extend(CalendarDatePicker.prototype, {
 		return this._same_year(d1, d2) && d1.getMonth() == d2.getMonth();
 	},
 
+	_last_date_of_month: function(d) {
+		return this._previous_date(this._next_month(d));
+	},
+
 	_extract_options: function() {
 		this.today_date = this._copy_date(this.options.today_date || new Date());
 
@@ -189,24 +193,19 @@ $.extend(CalendarDatePicker.prototype, {
 	},
 
 	_refresh_calendar_table_classes: function($table) {
-		var selected_d = this.selected_date && this._same_month(this.focus_date, this.selected_date) && this.selected_date.getDate();
-
 		var selected_class = 'selected';
 
-		$table.find('a.selected').each(function() {
-			$(this).removeClass(selected_class);
-			$(this).parent().removeClass(selected_class);
-		});
+		var selected_d = this.selected_date && this._same_month(this.focus_date, this.selected_date) && this.selected_date.getDate();
 
-		$table.find('tbody a').each(function() {
-			var $a = $(this);
-			var $td = $a.parent();
+		var $tbody = $table.children('tbody');
 
-			if ($a.text() == selected_d) {
-				$a.addClass(selected_class);
-				$td.addClass(selected_class);
-			}
-		});
+		var $old_selected_a = $tbody.find('a.selected');
+		$old_selected_a.removeClass(selected_class);
+		$old_selected_a.parent().removeClass(selected_class);
+
+		var $new_selected_a = $tbody.find('a:eq(' + (selected_d - 1) + ')');
+		$new_selected_a.addClass(selected_class);
+		$new_selected_a.parent().addClass(selected_class);
 	},
 
 	_attach: function() {
@@ -305,7 +304,7 @@ $.extend(CalendarDatePicker.prototype, {
 	_tbody_html: function() {
 		var first_day_of_week = this._copy_month(this.focus_date).getDay();
 		var cur_d = 1;
-		var last_d = this._previous_date(this._next_month(this.focus_date)).getDate();
+		var last_d = this._last_date_of_month(this.focus_date).getDate();
 		var selected_d = this.selected_date && this._same_month(this.focus_date, this.selected_date) && this.selected_date.getDate();
 		var today_d = this._same_month(this.focus_date, this.today_date) && this.today_date.getDate();
 
@@ -365,9 +364,11 @@ $.extend(CalendarDatePicker.prototype, {
 var _escape_html_elem;
 function escape_html(s) {
 	if (!_escape_html_elem) {
-		_escape_html_elem = document.createTextNode('');
+		_escape_html_elem = document.createElement('div');
+		_escape_html_elem.appendChild(document.createTextNode(s));
+	} else {
+		_escape_html_elem.firstChild.nodeValue = s;
 	}
-	_escape_html_elem.nodeValue = s;
 	return _escape_html_elem.innerHTML;
 }
 
