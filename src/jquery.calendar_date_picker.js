@@ -362,12 +362,13 @@ $.extend(CalendarDatePicker.prototype, {
 	}
 });
 
-var $_escape_html_elem;
+var _escape_html_elem;
 function escape_html(s) {
-	if (!$_escape_html_elem) {
-		$_escape_html_elem = $('<div></div>');
+	if (!_escape_html_elem) {
+		_escape_html_elem = document.createTextNode('');
 	}
-	return $_escape_html_elem.text(s).html();
+	_escape_html_elem.nodeValue = s;
+	return _escape_html_elem.innerHTML;
 }
 
 })(jQuery);
