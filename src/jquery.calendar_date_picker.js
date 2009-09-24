@@ -370,7 +370,7 @@ $.extend(CalendarDatePicker.prototype, {
 		} else {
 			return '';
 		}
-	},
+	}
 });
 
 var _escape_html_elem;
