@@ -210,7 +210,14 @@ $.extend(CalendarDatePicker.prototype, {
 		var $tbody = $table.children('tbody');
 
 		$tbody.click(function(e) {
-			var $a = $(e.originalTarget);
+      var originating_element;
+      if($.browser.msie) {
+        originating_element = e.srcElement;
+      } else {
+        originating_element = e.originalTarget;
+      }
+ 
+      var $a = $(originating_element);
 			if ($a[0] && $a[0].nodeName == 'A') {
 				e.preventDefault();
 
