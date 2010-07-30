@@ -50,10 +50,8 @@ $.extend(DatetimePickerField.prototype, {
 			_this._hide_calendar_or_refocus();
 			_this._blurs_to_ignore -= 1;
 		});
-		$.each(['keypress', 'cut', 'paste', 'input'], function() {
-			_this.$field.bind(this, function() {
-				_this._handle_edit();
-			});
+		_this.$field.bind('keypress cut paste input', function() {
+			_this._handle_edit();
 		});
 	},
 
@@ -105,6 +103,8 @@ $.extend(DatetimePickerField.prototype, {
 				if (s != _this.$field.val()) {
 					_this.$field.val(s);
 					_this.$field.trigger('input');
+          _this._hide_calendar();
+          _this._focus_next();
 				}
 			}
 		});
@@ -137,6 +137,18 @@ $.extend(DatetimePickerField.prototype, {
 			this.options.close_calendar_callback();
 		}
 	},
+
+  /*
+   * Focuses the next input in the from
+   */
+  _focus_next: function() {
+    //inspired by http://jqueryminute.com/set-focus-to-the-next-input-field-with-jquery/
+    var $fields = this.$field.parents('form:eq(0)').find(':input');
+    var index = $fields.index( this.$field );
+    if ( index > -1 && ( index + 1 ) < $fields.length ) {
+      $fields.eq( index + 1 ).focus();
+    }
+  },
 
 	/*
 	 * Reformats the value in a format Rails can read.
