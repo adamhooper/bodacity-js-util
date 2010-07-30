@@ -214,10 +214,10 @@ $.extend(CalendarDatePicker.prototype, {
       if($.browser.msie) {
         originating_element = e.srcElement;
       } else {
-        originating_element = e.originalTarget;
+        originating_element = e.target;
       }
- 
-      var $a = $(originating_element);
+
+			var $a = $(originating_element);
 			if ($a[0] && $a[0].nodeName == 'A') {
 				e.preventDefault();
 
