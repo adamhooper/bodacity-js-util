@@ -45,10 +45,8 @@ $.extend(TimeField.prototype, {
 	_attach: function() {
 		var _this = this;
 
-		$.each(['keypress', 'cut', 'paste', 'input'], function() {
-			_this.$field.bind(this, function() {
-				_this._handle_edit();
-			});
+		_this.$field.bind('keypress cut paste input', function() {
+			_this._handle_edit();
 		});
 
 		this.$field.bind('time_field:set_time', function(_, t) {
