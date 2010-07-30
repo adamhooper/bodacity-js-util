@@ -152,26 +152,28 @@ Channeler.prototype.abort_channel = function(type) {
  * - global: if true (default), fire global ajaxStart/ajaxStop handlers
  * - type: 'GET' (default) or 'POST'
  * - url: URL to request
+ *
+ * channel_options: local options that apply only to the current channel
  */
-Channeler.prototype.channel = function(type, options) {
+Channeler.prototype.channel = function(type, options, channel_options) {
 	this.abort_channel(type);
 
-	this.broadcast(type + '.send', options);
+	this.broadcast(type + '.send', options, channel_options);
 
 	var _this = this;
 	var jquery_options = jQuery.extend({
 		dataType: 'json',
 		success: function(data, textStatus) {
-			_this.broadcast(type + '.success', textStatus, data);
+			_this.broadcast(type + '.success', textStatus, data, channel_options);
 		},
 		error: function(xhr, textStatus, ex) {
-			_this.broadcast(type + '.error', textStatus);
+			_this.broadcast(type + '.error', textStatus, channel_options);
 		},
 		complete: function(xhr, textStatus) {
 			if (xhr == _this.requests[type]) {
 				delete _this.requests[type];
 			}
-			_this.broadcast(type + '.complete', textStatus);
+			_this.broadcast(type + '.complete', textStatus, channel_options);
 		}
 	}, options);
 
