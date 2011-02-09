@@ -161,7 +161,7 @@ $.extend(CalendarDatePicker.prototype, {
 
 		this.focus_date = this._copy_month(this.options.focus_date || this.selected_date || this.today_date);
 
-		this.time = this._does_datetime() ? this._copy_time(this.options.selected_date || this.options.today_date || new Date()) : '00:00';
+		this.time = this._does_datetime() ? this._copy_time(this.options.selected_date || this.options.today_date || new Date()) : false;
 	},
 
 	_refresh_calendar_table_classes: function($table) {
@@ -239,7 +239,7 @@ $.extend(CalendarDatePicker.prototype, {
 		if (this._does_datetime()) {
 			var _this = this;
 			var $time_field = this.$div.children().children('div.time').find('input');
-			$time_field.time_field({ on_invalid: '00:00' });
+			$time_field.time_field();
 			$time_field.trigger('time_field:set_time', this.time);
 
 			$time_field.bind('time_field:time_changed', function(_, time) {
@@ -297,6 +297,8 @@ $.extend(CalendarDatePicker.prototype, {
 		}
 		this.$div.trigger('calendar_date_picker:date_selected', [this._copy_date_with_time(this.selected_date, this.time)]);
 
+		this.focus_date = this._copy_month(this.selected_date || this.today_date);
+    this._refresh_calendar();
 		this._refresh_calendar_table_classes(this.$div.find('table'));
 	},
 

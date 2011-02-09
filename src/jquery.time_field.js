@@ -45,19 +45,24 @@ $.extend(TimeField.prototype, {
 	_attach: function() {
 		var _this = this;
 
-		_this.$field.bind('keypress cut paste input', function() {
+		_this.$field.bind('blur', function() {
 			_this._handle_edit();
 		});
-
+		
 		this.$field.bind('time_field:set_time', function(_, t) {
 			_this.set_time(t);
 		});
 	},
 
 	_s_to_time: function(s) {
+    if(typeof(Date.parse) == 'function') {
+      var date = Date.parse(s);
+      return date ? date.toString('HH:mm') : this.options.on_invalid;
+    }
+
+		var ret;
 		var re = /^\s*(\d\d?)(:(\d\d))?\s*([ap]m?)?\s*$/i;
 		var match = s.match(re);
-		var ret;
 
 		var invalid = !match;
 
@@ -92,6 +97,11 @@ $.extend(TimeField.prototype, {
 	},
 
 	_time_to_s: function(time) {
+    if(typeof(Date.parse) == 'function') {
+      var date = Date.parse(time);
+      return date ? date.toString('h:mm tt') : this.options.on_invalid;
+    }
+
 		var match = time && time.match(/(\d\d):(\d\d)/);
 		if (match) {
 			var hours = +match[1];

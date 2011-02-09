@@ -67,6 +67,7 @@ $.extend(DatetimePickerField.prototype, {
 
 		var $c = $('<div></div>');
 		$c.css('position', 'absolute');
+    $c.css('z-index', '1000');
 		$c.css('left', this.$field.offset().left + this.$field.width() + 20);
 		$c.css('top', this.$field.offset().top);
 
@@ -76,7 +77,7 @@ $.extend(DatetimePickerField.prototype, {
 		var calendar_options = $.extend({
 			selected_date: this.get_selected_datetime()
 		}, this.options.calendar);
-		$c.calendar_date_picker(calendar_options);
+    $c.calendar_date_picker(calendar_options);
 
 		$c.mousedown(function(e) {
 			_this._in_time_field = false;
@@ -103,11 +104,21 @@ $.extend(DatetimePickerField.prototype, {
 				if (s != _this.$field.val()) {
 					_this.$field.val(s);
 					_this.$field.trigger('input');
-          _this._hide_calendar();
-          _this._focus_next();
+          if(!_this.options.calendar.time_text) {
+            _this._hide_calendar();
+            _this._focus_next();
+          }
 				}
 			}
 		});
+
+    //enter in the time field closes the calendar
+    $c.find('.time input').bind('keydown', function(e) {
+      if(e.keyCode == 13) {
+        $(this).blur();
+        _this._hide_calendar();
+      }
+    });
 
 		this.$calendar = $c;
 
@@ -172,7 +183,7 @@ $.extend(DatetimePickerField.prototype, {
 		} else {
 			window.setTimeout(function() {
 				if (_this._in_time_field) {
-					if (_this.$calendar.length) {
+					if (_this.$calendar && _this.$calendar.length) {
 						_this.$calendar.find('input').focus();
 					}
 				} else {
