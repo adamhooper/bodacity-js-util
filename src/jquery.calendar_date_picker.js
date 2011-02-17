@@ -243,6 +243,7 @@ $.extend(CalendarDatePicker.prototype, {
 			$time_field.trigger('time_field:set_time', this.time);
 
 			$time_field.bind('time_field:time_changed', function(_, time) {
+        if(!_this.selected_date) _this.selected_date = new Date();
 				var d = _this._copy_date_with_time(_this.selected_date, time);
 				_this.select_date(d);
 			});
