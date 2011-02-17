@@ -55,7 +55,7 @@ $.extend(TimeField.prototype, {
 	},
 
 	_s_to_time: function(s) {
-    if(typeof(Date.parse) == 'function') {
+    if(typeof(Date.Parsing) == 'object') {
       var date = Date.parse(s);
       return date ? date.toString('HH:mm') : this.options.on_invalid;
     }
@@ -97,7 +97,7 @@ $.extend(TimeField.prototype, {
 	},
 
 	_time_to_s: function(time) {
-    if(typeof(Date.parse) == 'function') {
+    if(typeof(Date.Parsing) == 'object') {
       var date = Date.parse(time);
       return date ? date.toString('h:mm tt') : this.options.on_invalid;
     }
